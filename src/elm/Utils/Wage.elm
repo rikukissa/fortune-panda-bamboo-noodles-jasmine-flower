@@ -1,6 +1,7 @@
 module Utils.Wage exposing (Wage, HourMarking, calculateWages)
 
-import List exposing (filter, length, map, foldl, range)
+import Maybe exposing (withDefault)
+import List exposing (head, filter, length, map, foldl, range)
 import Guards exposing ((|=),(=>))
 import List.Extra exposing (groupWhile)
 import Time.DateTime as DateTime exposing (DateTime, dateTime, delta, hour)
@@ -49,37 +50,45 @@ calculateOvertimeCompensation hours =
   in
     foldl getOvertime 0 <| range 0 <| overtimeHours - 1
 
-getWage : HourMarking -> Wage
+getWage : HourMarking -> (Float, Float, Float)
 getWage hours =
   let
     totalHours = getDeltaHours hours.start hours.end
     regular = (toFloat totalHours) * hourlyWage
     overtime = calculateOvertimeCompensation totalHours
     evening =
+      -- @todo figure out whether overtime compensation and evening compensation can both apply
       if overtime > 0 then
         0
       else
         calculateEveningCompensation hours.start hours.end
   in
-    (Wage "1" regular evening overtime)
+    (regular, evening, overtime)
 
 
-sumMarkings : List HourMarking -> Wage
-sumMarkings hours =
+calculateByMarkings : List HourMarking -> Wage
+calculateByMarkings hours =
   let
-    add hourMarking memo =
+    personId = head hours
+      |> Maybe.map .personId
+      |> withDefault "_"
+    addToWage hourMarking memo =
       let
-        wage = getWage hourMarking
+        (regular, evening, overtime) = getWage hourMarking
       in
-        (Wage "1" (memo.regular + wage.regular) (memo.evening + wage.evening) (memo.overtime + wage.overtime))
+        { memo |
+          regular = memo.regular + regular
+        , evening = memo.evening + evening
+        , overtime = memo.overtime + overtime
+        }
   in
-    foldl add (Wage "1" 0 0 0) hours
+    foldl addToWage (Wage personId 0 0 0) hours
 
 
 calculateWages : List HourMarking -> List Wage
 calculateWages hours =
   let
     hoursByEmployee = groupWhile (\a b -> a.personId == b.personId) hours
-    wages = map sumMarkings hoursByEmployee
+    wages = map calculateByMarkings hoursByEmployee
   in
     wages
