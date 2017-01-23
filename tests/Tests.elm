@@ -20,8 +20,8 @@ getWageForSingleMarking start end =
 
 all : Test
 all =
-  describe "Sample Test Suite"
-    [ describe "Wage calculator"
+  describe "Wage calculator"
+    [ describe "General functionality"
       [ test "returns as many wages as there are unique employees" <|
         \() ->
           let
