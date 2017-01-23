@@ -60,16 +60,7 @@ all =
               , \(wage) -> Expect.equal wage.overtime <| (2 * 3.75 * 0.25) + (2 * 3.75 * 0.5) + (3.75 * 3)
               ]
               wage
-      , test "calculates only overtime compensation even if other compensations would apply" <|
-        \() ->
-          let
-            wage = getWageForSingleMarking
-              (dateTime { zero | year = 2015, month = 10, day = 10, hour = 8 })
-              (dateTime { zero | year = 2015, month = 10, day = 10, hour = 23 })
-          in
-            Expect.all
-              [ \(wage) -> Expect.equal wage.evening 0 ]
-              wage
+
       ]
 
     , describe "Evening compensation calculation returns correct wage for"

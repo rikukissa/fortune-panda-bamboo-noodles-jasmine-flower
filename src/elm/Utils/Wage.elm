@@ -57,11 +57,7 @@ getWage hours =
     regular = (toFloat totalHours) * hourlyWage
     overtime = calculateOvertimeCompensation totalHours
     evening =
-      -- @todo figure out whether overtime compensation and evening compensation can both apply
-      if overtime > 0 then
-        0
-      else
-        calculateEveningCompensation hours.start hours.end
+      calculateEveningCompensation hours.start hours.end
   in
     (regular, evening, overtime)
 
