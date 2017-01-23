@@ -1,48 +1,98 @@
 module Main exposing (..)
 import Html exposing (..)
+import Html.Events exposing (on)
 import Html.Attributes exposing (..)
-import Html.Events exposing ( onClick )
+import Json.Decode as JD
+import Ports exposing (CSVData, fileSelected, fileContentRead)
+import Utils.Wage exposing (HourMarking, Wage, fromCSVRow, calculateWages)
 
--- component import example
-import Components.Hello exposing ( hello )
+type alias HourSheet = List HourMarking
 
+type alias Model =
+  { id : String
+  , hourSheet : Maybe HourSheet
+  }
 
--- APP
-main : Program Never Int Msg
-main =
-  Html.beginnerProgram { model = model, view = view, update = update }
+init : ( Model, Cmd Msg )
+init =
+  ( { id = "fileInputId"
+    , hourSheet = Nothing
+    }
+  , Cmd.none
+  )
 
+type Msg
+  = NoOp
+  | FileSelected
+  | CSVRowRead CSVData
 
--- MODEL
-type alias Model = Int
-
-model : number
-model = 0
-
-
--- UPDATE
-type Msg = NoOp | Increment
-
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    NoOp -> model
-    Increment -> model + 1
+    NoOp -> ( model, Cmd.none )
+    FileSelected ->
+      ( { model | hourSheet = Nothing }
+      , fileSelected model.id
+      )
+    CSVRowRead data ->
+      ( { model | hourSheet =
+            case (model.hourSheet, (Result.toMaybe (fromCSVRow data))) of
+              (Nothing, Just hourMarking) -> Just [hourMarking]
+              (Just hourSheet, Just hourMarking) -> Just (hourMarking :: hourSheet)
+              (Just hourSheet, Nothing) -> Just hourSheet
+              (Nothing, Nothing) -> Nothing
 
+        }
+      , Cmd.none
+      )
 
--- VIEW
--- Html is defined as: elem [ attribs ][ children ]
--- CSS can be applied via class names or inline style attrib
+row : Wage -> Html Msg
+row wage =
+  tr []
+    [ td [] [text wage.personId]
+    , td [] [text <| toString wage.regular]
+    , td [] [text <| toString wage.overtime]
+    , td [] [text <| toString wage.evening]
+    , td [] [text <| toString (wage.regular + wage.evening + wage.overtime)]
+    ]
+
 view : Model -> Html Msg
 view model =
-  div [] []
+  let
+    wages = Maybe.map calculateWages model.hourSheet
+      |> Maybe.withDefault []
+  in
 
--- CSS STYLES
-styles : { img : List ( String, String ) }
-styles =
-  {
-    img =
-      [ ( "width", "33%" )
-      , ( "border", "4px solid #337AB7")
+    div []
+      [ text ((toString << (Maybe.withDefault 0) << (Maybe.map List.length)) model.hourSheet)
+      , input
+          [ type_ "file"
+          , id model.id
+          , on "change"
+              (JD.succeed FileSelected)] []
+      , table []
+        [ thead []
+          [ tr []
+            [ th [] [ text "ID" ]
+            , th [] [ text "Regular" ]
+            , th [] [ text "Overtime" ]
+            , th [] [ text "Evening" ]
+            , th [] [ text "Total" ]
+            ]
+          ]
+        , tbody [] (List.map row wages)
+        ]
       ]
-  }
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+ fileContentRead CSVRowRead
+
+main : Program Never Model Msg
+main =
+  program
+    { init = init
+    , update = update
+    , view = view
+    , subscriptions = subscriptions
+    }

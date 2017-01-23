@@ -6,7 +6,7 @@ import Maybe exposing (..)
 import Expect
 
 import Time.DateTime as DateTime exposing (DateTime, dateTime, zero)
-import Utils.Wage exposing (Wage, calculateWages, HourMarking)
+import Utils.Wage exposing (Wage, HourMarking, fromCSVRow, calculateWages)
 
 getWageForSingleMarking : DateTime -> DateTime -> Wage
 getWageForSingleMarking start end =
@@ -90,5 +90,29 @@ all =
               (dateTime { zero | year = 2015, month = 10, day = 11, hour = 07 })
           in
             Expect.equal wage.evening (5 * 1.15)
+      ]
+    , describe "CSV row parser"
+      [ test "parses strings to HourMarking instances" <|
+        \() ->
+          case (fromCSVRow "nimi, 8, 26.3.2014, 13:15, 21:00") of
+            Ok marking ->
+              Expect.equal marking
+                (HourMarking "nimi" "8"
+                  (dateTime { zero | year = 2014, month = 3, day = 26, hour = 13, minute = 15})
+                  (dateTime { zero | year = 2014, month = 3, day = 26, hour = 21 }))
+
+            Err _ ->
+              Expect.fail "Failed to parse csv row"
+      , test "interprets end date as the next day when hour is >24" <|
+        \() ->
+          case (fromCSVRow "nimi, 8, 26.3.2014, 13:15, 02:00") of
+            Ok marking ->
+              Expect.equal marking
+                (HourMarking "nimi" "8"
+                  (dateTime { zero | year = 2014, month = 3, day = 26, hour = 13, minute = 15})
+                  (dateTime { zero | year = 2014, month = 3, day = 27, hour = 02 }))
+
+            Err _ ->
+              Expect.fail "Failed to parse csv row"
       ]
     ]

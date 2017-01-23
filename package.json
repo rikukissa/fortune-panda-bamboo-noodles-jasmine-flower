@@ -36,5 +36,10 @@
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1",
     "webpack-merge": "^2.4.0"
+  },
+  "dependencies": {
+    "event-stream": "^3.3.4",
+    "filereader-stream": "^1.0.0",
+    "through2": "^2.0.3"
   }
 }
