@@ -1,8 +1,11 @@
 module Components.WagesTable exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Tuple exposing (first, second)
+import Html.Attributes exposing (class, src)
+
 import Utils.Wage exposing (Wage)
+import List.Extra exposing (find)
 
 roundTo2Decimals : Float -> Float
 roundTo2Decimals num =
@@ -12,34 +15,45 @@ euroFormat : Float -> String
 euroFormat num =
   toString (roundTo2Decimals num) ++ " €"
 
-value : String -> Html a
-value val = div [ class "wages-table__value" ] [ text val ]
+value : Html a -> Html a
+value val = div [ class "wages-table__value" ] [ val ]
 
-row : Wage -> Html a
-row wage =
-  tr [ class "wages-table__row" ]
-    [ td [] [value wage.personId]
-    , td [] [value <| euroFormat wage.regular]
-    , td [] [value <| euroFormat wage.overtime]
-    , td [] [value <| euroFormat wage.evening]
-    , td []
-      [ strong [] [value <| euroFormat (wage.regular + wage.evening + wage.overtime) ]]
-    ]
+row : List (String, String) -> Wage -> Html a
+row employees wage =
+  let
+    personName = find (first >> ((==) wage.personId)) employees
+      |> Maybe.map second
+      |> Maybe.withDefault "?"
+    totalWage = wage.regular + wage.evening + wage.overtime
+  in
+    tr [ class "wages-table__row" ]
+      [ td []
+        [ value <| div []
+          [ img [ src <| "http://i.pravatar.cc/20?" ++ wage.personId ] []
+          , text personName
+          ]
+        ]
+      , td [] [ value <| text <| euroFormat wage.regular ]
+      , td [] [ value <| text <| euroFormat wage.overtime ]
+      , td [] [ value <| text <| euroFormat wage.evening ]
+      , td []
+        [ strong [] [value <| text <| euroFormat totalWage ]]
+      ]
 
 
-wagesTable : List Wage -> Html a
-wagesTable wages =
+wagesTable : List (String, String) -> List Wage -> Html a
+wagesTable employees wages =
   div []
     [ table [ class "wages-table" ]
       [ thead []
         [ tr [ class "wages-table__header" ]
-          [ th [] [ text "ID" ]
+          [ th [] [ text "Name" ]
           , th [] [ text "Regular" ]
           , th [] [ text "Overtime" ]
           , th [] [ text "Evening" ]
           , th [] [ text "Total" ]
           ]
         ]
-      , tbody [] (List.map row wages)
+      , tbody [] (List.map (row employees) wages)
       ]
     ]

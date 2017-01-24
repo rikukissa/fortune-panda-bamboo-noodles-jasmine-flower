@@ -4,12 +4,19 @@ html, body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   background: #f4f8f9;
+  padding: 0.5em;
+  color: #4e4e4e;
+}
+
+h2 {
+  font-weight: 300;
 }
 
 .wages-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  margin-top: 1em;
 }
 
 .wages-table__header th {
@@ -30,4 +37,10 @@ html, body {
   width: 100%;
   box-sizing: border-box;
   display: inline-block;
+}
+
+.wages-table__value img {
+  vertical-align: middle;
+  margin-right: 0.5em;
+  border-radius: 100%;
 }

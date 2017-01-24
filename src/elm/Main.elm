@@ -3,6 +3,8 @@ import Html exposing (..)
 import Html.Events exposing (on)
 import Html.Attributes exposing (..)
 import Json.Decode as JD
+import List.Extra exposing (unique)
+
 import Ports exposing (CSVData, fileSelected, fileContentRead)
 import Utils.Wage exposing (HourMarking, Wage, fromCSVRow, calculateWages)
 import Components.WagesTable exposing (wagesTable)
@@ -12,12 +14,14 @@ type alias HourSheet = List HourMarking
 type alias Model =
   { id : String
   , hourSheet : Maybe HourSheet
+  , employees : List ( String, String )
   }
 
 init : (Model, Cmd Msg)
 init =
   ( { id = "fileInputId"
     , hourSheet = Nothing
+    , employees = []
     }
   , Cmd.none
   )
@@ -32,16 +36,23 @@ update msg model =
   case msg of
     NoOp -> ( model, Cmd.none )
     FileSelected ->
-      ( { model | hourSheet = Nothing }
+      ( { model | hourSheet = Nothing, employees = [] }
       , fileSelected model.id
       )
     CSVRowRead data ->
-      ( { model | hourSheet =
+      ( { model |
+          hourSheet =
             case (model.hourSheet, (Result.toMaybe (fromCSVRow data))) of
               (Nothing, Just hourMarking) -> Just [hourMarking]
               (Just hourSheet, Just hourMarking) -> Just (hourMarking :: hourSheet)
               (Just hourSheet, Nothing) -> Just hourSheet
               (Nothing, Nothing) -> Nothing
+        , employees =
+            case (Result.toMaybe (fromCSVRow data)) of
+              Nothing -> model.employees
+              Just hourSheet ->
+                (hourSheet.personId, hourSheet.personName) :: model.employees
+                  |> unique
         }
       , Cmd.none
       )
@@ -50,12 +61,12 @@ view : Model -> Html Msg
 view model =
   let
     table = Maybe.map calculateWages model.hourSheet
-      |> Maybe.map wagesTable
+      |> Maybe.map (wagesTable model.employees)
       |> Maybe.withDefault (div [] [])
-
   in
     div []
-      [ input
+      [ h2 [] [ text "Upload hour markings" ]
+      , input
           [ type_ "file"
           , id model.id
           , on "change"
