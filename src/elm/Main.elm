@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Json.Decode as JD
 import Ports exposing (CSVData, fileSelected, fileContentRead)
 import Utils.Wage exposing (HourMarking, Wage, fromCSVRow, calculateWages)
+import Components.WagesTable exposing (wagesTable)
 
 type alias HourSheet = List HourMarking
 
@@ -13,7 +14,7 @@ type alias Model =
   , hourSheet : Maybe HourSheet
   }
 
-init : ( Model, Cmd Msg )
+init : (Model, Cmd Msg)
 init =
   ( { id = "fileInputId"
     , hourSheet = Nothing
@@ -41,47 +42,25 @@ update msg model =
               (Just hourSheet, Just hourMarking) -> Just (hourMarking :: hourSheet)
               (Just hourSheet, Nothing) -> Just hourSheet
               (Nothing, Nothing) -> Nothing
-
         }
       , Cmd.none
       )
 
-row : Wage -> Html Msg
-row wage =
-  tr []
-    [ td [] [text wage.personId]
-    , td [] [text <| toString wage.regular]
-    , td [] [text <| toString wage.overtime]
-    , td [] [text <| toString wage.evening]
-    , td [] [text <| toString (wage.regular + wage.evening + wage.overtime)]
-    ]
-
 view : Model -> Html Msg
 view model =
   let
-    wages = Maybe.map calculateWages model.hourSheet
-      |> Maybe.withDefault []
-  in
+    table = Maybe.map calculateWages model.hourSheet
+      |> Maybe.map wagesTable
+      |> Maybe.withDefault (div [] [])
 
+  in
     div []
-      [ text ((toString << (Maybe.withDefault 0) << (Maybe.map List.length)) model.hourSheet)
-      , input
+      [ input
           [ type_ "file"
           , id model.id
           , on "change"
               (JD.succeed FileSelected)] []
-      , table []
-        [ thead []
-          [ tr []
-            [ th [] [ text "ID" ]
-            , th [] [ text "Regular" ]
-            , th [] [ text "Overtime" ]
-            , th [] [ text "Evening" ]
-            , th [] [ text "Total" ]
-            ]
-          ]
-        , tbody [] (List.map row wages)
-        ]
+      , table
       ]
 
 subscriptions : Model -> Sub Msg
