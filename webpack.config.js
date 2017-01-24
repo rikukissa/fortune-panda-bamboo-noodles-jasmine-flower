@@ -66,10 +66,7 @@ if (TARGET_ENV === 'development') {
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
-          loader: 'babel-loader',
-          query: {
-            presets: ['es2015']
-          }
+          loader: 'babel-loader'
         },
         {
           test: /\.(css|scss)$/,
@@ -97,6 +94,11 @@ if (TARGET_ENV === 'production') {
           test:    /\.elm$/,
           exclude: [/elm-stuff/, /node_modules/],
           loader:  'elm-webpack'
+        },
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel-loader'
         },
         {
           test: /\.(css|scss)$/,
