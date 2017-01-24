@@ -2,7 +2,7 @@ module Utils.Wage exposing (Wage, HourMarking, calculateWages, fromCSVRow)
 
 import Maybe exposing (withDefault)
 import String exposing (split, padLeft, join, trim)
-import List exposing (head, filter, length, map, foldl, range)
+import List exposing (head, filter, length, map, foldl, range, sortBy)
 import Guards exposing ((|=),(=>))
 import List.Extra exposing (groupWhile)
 import Time.DateTime as DateTime exposing (DateTime, addDays, dateTime, delta, hour, fromISO8601)
@@ -45,7 +45,7 @@ fromCSVRow row =
           parsedStart = fromISO8601 (formattedDate ++ "T" ++ formattedStart ++ ":00Z")
           parsedEnd = fromISO8601 (formattedDate ++ "T" ++ formattedEnd ++ ":00Z")
 
-          toHourMarking (start, end) = HourMarking personName personId start
+          toHourMarking (start, end) = HourMarking personId personName start
             <| if (hour end) < (hour start) then (addDays 1 end) else end
         in
           (Result.map2 (,) parsedStart parsedEnd) |> Result.andThen (toHourMarking >> Ok)
@@ -114,7 +114,7 @@ calculateByMarkings hours =
 calculateWages : List HourMarking -> List Wage
 calculateWages hours =
   let
-    hoursByEmployee = groupWhile (\a b -> a.personId == b.personId) hours
+    hoursByEmployee = groupWhile (\a b -> a.personId == b.personId) (sortBy .personId hours)
     wages = map calculateByMarkings hoursByEmployee
   in
     wages

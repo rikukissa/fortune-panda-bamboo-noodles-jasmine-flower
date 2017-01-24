@@ -29,10 +29,10 @@ all =
               [ (HourMarking "1" "Jorma Teräs"
                   (dateTime { zero | year = 2015, month = 10, day = 10, hour = 8 })
                   (dateTime { zero | year = 2015, month = 10, day = 10, hour = 16 }))
-              , (HourMarking "1" "Jorma Teräs"
+              , (HourMarking "2" "Foo Bar"
                   (dateTime { zero | year = 2015, month = 10, day = 11, hour = 8 })
                   (dateTime { zero | year = 2015, month = 10, day = 11, hour = 16 }))
-              , (HourMarking "2" "Foo Bar"
+              , (HourMarking "1" "Jorma Teräs"
                   (dateTime { zero | year = 2015, month = 10, day = 11, hour = 8 })
                   (dateTime { zero | year = 2015, month = 10, day = 11, hour = 16 }))
               ]
@@ -97,7 +97,7 @@ all =
           case (fromCSVRow "nimi, 8, 26.3.2014, 13:15, 21:00") of
             Ok marking ->
               Expect.equal marking
-                (HourMarking "nimi" "8"
+                (HourMarking "8" "nimi"
                   (dateTime { zero | year = 2014, month = 3, day = 26, hour = 13, minute = 15})
                   (dateTime { zero | year = 2014, month = 3, day = 26, hour = 21 }))
 
@@ -108,7 +108,7 @@ all =
           case (fromCSVRow "nimi, 8, 26.3.2014, 13:15, 02:00") of
             Ok marking ->
               Expect.equal marking
-                (HourMarking "nimi" "8"
+                (HourMarking "8" "nimi"
                   (dateTime { zero | year = 2014, month = 3, day = 26, hour = 13, minute = 15})
                   (dateTime { zero | year = 2014, month = 3, day = 27, hour = 02 }))
 
