@@ -1,32 +1,26 @@
-var path              = require( 'path' );
-var webpack           = require( 'webpack' );
-var merge             = require( 'webpack-merge' );
-var HtmlWebpackPlugin = require( 'html-webpack-plugin' );
-var autoprefixer      = require( 'autoprefixer' );
-var ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
-var CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-var entryPath         = path.join( __dirname, 'src/static/index.js' );
-var outputPath        = path.join( __dirname, 'dist' );
+const path = require('path');
+const webpack = require('webpack');
+const merge = require('webpack-merge');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-console.log( 'WEBPACK GO!');
+const entryPath = path.join(__dirname, 'src/static/index.js');
+const outputPath = path.join(__dirname, 'dist');
 
 // determine build env
-var TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
-var outputFilename = TARGET_ENV === 'production' ? '[name]-[hash].js' : '[name].js'
+const TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
+const outputFilename = TARGET_ENV === 'production' ? '[name]-[hash].js' : '[name].js'
 
 // common webpack config
-var commonConfig = {
-
+const commonConfig = {
   output: {
-    path:       outputPath,
-    filename: `/static/js/${outputFilename}`,
-    // publicPath: '/'
+    path: outputPath,
+    filename: `/static/js/${outputFilename}`
   },
-
   resolve: {
     extensions: ['', '.js', '.elm']
   },
-
   module: {
     noParse: /\.elm$/,
     loaders: [
@@ -36,36 +30,32 @@ var commonConfig = {
       }
     ]
   },
-
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/static/index.html',
-      inject:   'body',
+      inject: 'body',
       filename: 'index.html'
     })
   ],
-
-  postcss: [ autoprefixer( { browsers: ['last 2 versions'] } ) ],
+  postcss: [
+    autoprefixer({ browsers: ['last 2 versions'] })
+  ],
 
 }
 
 // additional webpack settings for local env (when invoked by 'npm start')
-if ( TARGET_ENV === 'development' ) {
-  console.log( 'Serving locally...');
+if (TARGET_ENV === 'development') {
+  console.log('Serving locally...');
 
-  module.exports = merge( commonConfig, {
-
+  module.exports = merge(commonConfig, {
     entry: [
       'webpack-dev-server/client?http://localhost:8080',
       entryPath
     ],
-
     devServer: {
-      // serve index.html in place of 404 responses
       historyApiFallback: true,
       contentBase: './src',
     },
-
     module: {
       loaders: [
         {
@@ -92,18 +82,15 @@ if ( TARGET_ENV === 'development' ) {
         }
       ]
     }
-
   });
 }
 
 // additional webpack settings for prod env (when invoked via 'npm run build')
-if ( TARGET_ENV === 'production' ) {
-  console.log( 'Building for prod...');
+if (TARGET_ENV === 'production') {
+  console.log('Building for prod...');
 
-  module.exports = merge( commonConfig, {
-
+  module.exports = merge(commonConfig, {
     entry: entryPath,
-
     module: {
       loaders: [
         {
@@ -113,7 +100,7 @@ if ( TARGET_ENV === 'production' ) {
         },
         {
           test: /\.(css|scss)$/,
-          loader: ExtractTextPlugin.extract( 'style-loader', [
+          loader: ExtractTextPlugin.extract('style-loader', [
             'css-loader',
             'postcss-loader',
             'sass-loader'
@@ -123,28 +110,12 @@ if ( TARGET_ENV === 'production' ) {
     },
 
     plugins: [
-      new CopyWebpackPlugin([
-        {
-          from: 'src/static/img/',
-          to:   'static/img/'
-        },
-        {
-          from: 'src/favicon.ico'
-        },
-      ]),
-
       new webpack.optimize.OccurenceOrderPlugin(),
-
-      // extract CSS into a separate file
-      new ExtractTextPlugin( 'static/css/[name]-[hash].css', { allChunks: true } ),
-
-      // minify & mangle JS/CSS
+      new ExtractTextPlugin('static/css/[name]-[hash].css', { allChunks: true }),
       new webpack.optimize.UglifyJsPlugin({
-          minimize:   true,
-          compressor: { warnings: false }
-          // mangle:  true
+        minimize: true,
+        compressor: { warnings: false }
       })
     ]
-
   });
 }
