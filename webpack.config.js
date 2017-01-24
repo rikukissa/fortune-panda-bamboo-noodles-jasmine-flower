@@ -74,6 +74,14 @@ if ( TARGET_ENV === 'development' ) {
           loader:  'elm-hot!elm-webpack?verbose=true&warn=true&debug=true'
         },
         {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel-loader',
+          query: {
+            presets: ['es2015']
+          }
+        },
+        {
           test: /\.(css|scss)$/,
           loaders: [
             'style-loader',
