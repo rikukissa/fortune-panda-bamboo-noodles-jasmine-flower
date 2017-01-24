@@ -1,22 +1,20 @@
 {
-  "name": "elm-webpack-starter",
-  "description": "Webpack setup for writing Elm apps",
+  "name": "wage-calculator",
+  "description": "Client for turning CSVs into wage calculations",
   "version": "0.8.4",
   "license": "MIT",
-  "author": "Peter Morawiec",
+  "author": "Riku Rouvila",
   "repository": {
     "type": "git",
-    "url": "https://github.com/moarwick/elm-webpack-starter"
+    "url": "https://github.com/rikukissa/fortune-panda-bamboo-noodles-jasmine-flower"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline",
-    "build": "rimraf dist && webpack && mv dist/*.eot dist/static/css/ && mv dist/*.woff* dist/static/css/ && mv dist/*.svg dist/static/css/ && mv dist/*.ttf dist/static/css/",
-    "test": "elm-test",
-    "reinstall": "npm i rimraf && rimraf node_modules && npm uninstall -g elm && npm i -g elm && npm i && elm package install"
+    "build": "rimraf dist && webpack",
+    "test": "elm-test"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
-    "bootstrap-sass": "^3.3.6",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
     "elm": "^0.18.0",
