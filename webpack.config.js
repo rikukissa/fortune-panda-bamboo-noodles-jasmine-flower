@@ -19,7 +19,8 @@ const commonConfig = {
     filename: `static/js/${outputFilename}`
   },
   resolve: {
-    extensions: ['', '.js', '.elm']
+    extensions: ['', '.js', '.elm'],
+    modulesDirectories: ['./src', './node_modules']
   },
   module: {
     noParse: /\.elm$/,

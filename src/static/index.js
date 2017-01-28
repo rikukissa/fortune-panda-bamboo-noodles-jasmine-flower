@@ -2,9 +2,9 @@ const fileReaderStream = require('filereader-stream');
 const { split } = require('event-stream');
 const through2 = require('through2');
 
-require('./styles/main.scss');
+const Elm = require('elm/Main');
+require('static/styles/main.scss');
 
-const Elm = require('../elm/Main');
 const app = Elm.Main.embed(document.getElementById('main'));
 
 app.ports.fileSelected.subscribe(function (id) {
