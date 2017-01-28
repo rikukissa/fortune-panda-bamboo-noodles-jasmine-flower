@@ -1,11 +1,12 @@
-module Utils.Wage exposing (Wage, calculateWages)
+module Utils.Wage exposing ( Wage, calculateWages )
 
-import Maybe exposing (withDefault)
-import List exposing (head, filter, length, map, foldl, range, sortBy)
-import Guards exposing ((|=),(=>))
-import List.Extra exposing (groupWhile)
-import Time.DateTime as DateTime exposing (DateTime, delta, hour)
-import Utils.HourMarking exposing (HourMarking)
+import Maybe exposing ( withDefault )
+import List exposing ( head, filter, length, map, foldl, range, sortBy )
+import Guards exposing ( (|=),(=>) )
+import List.Extra exposing ( groupWhile )
+import Time.DateTime as DateTime exposing ( DateTime, delta, hour )
+
+import Utils.HourMarking exposing ( HourMarking )
 
 workdayLength : Int
 workdayLength = 8
@@ -47,7 +48,7 @@ calculateOvertimeCompensation hours =
   in
     foldl getOvertime 0 <| range 0 <| overtimeHours - 1
 
-getWage : HourMarking -> (Float, Float, Float)
+getWage : HourMarking -> ( Float, Float, Float )
 getWage hours =
   let
     totalHours = getDeltaHours hours.start hours.end
@@ -67,7 +68,7 @@ calculateByMarkings hours =
       |> withDefault "_"
     addToWage hourMarking memo =
       let
-        (regular, evening, overtime) = getWage hourMarking
+        ( regular, evening, overtime ) = getWage hourMarking
       in
         { memo |
           regular = memo.regular + regular

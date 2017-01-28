@@ -1,9 +1,9 @@
-module Utils.HourMarking exposing (HourMarking, fromCSVRow)
+module Utils.HourMarking exposing ( HourMarking, fromCSVRow )
 
-import String exposing (split, padLeft, join, trim)
-import List exposing (head, filter, length, map)
-import Time.DateTime as DateTime exposing (DateTime, addDays, hour, fromISO8601)
-import Ports exposing (CSVData)
+import String exposing ( split, padLeft, join, trim )
+import List exposing ( head, filter, length, map )
+import Time.DateTime as DateTime exposing ( DateTime, addDays, hour, fromISO8601 )
+import Ports exposing ( CSVData )
 
 type alias HourMarking =
   { personId : String
@@ -22,7 +22,7 @@ fromCSVRow row =
     formatTime = split ":" >> (List.map (padLeft 2 '0')) >> join ":"
   in
     case values of
-      [personName, personId, dateString, startHour, endHour] ->
+      [ personName, personId, dateString, startHour, endHour ] ->
         let
           formattedDate = formatDate dateString
           formattedStart = formatTime startHour

@@ -1,11 +1,11 @@
 module Components.WagesTable exposing (..)
 
 import Html exposing (..)
-import Tuple exposing (first, second)
-import Html.Attributes exposing (class, src)
+import Tuple exposing ( first, second )
+import Html.Attributes exposing ( class, src )
+import List.Extra exposing ( find )
 
-import Utils.Wage exposing (Wage)
-import List.Extra exposing (find)
+import Utils.Wage exposing ( Wage )
 
 roundTo2Decimals : Float -> Float
 roundTo2Decimals num =
@@ -18,7 +18,7 @@ euroFormat num =
 value : Html a -> Html a
 value val = div [ class "wages-table__value" ] [ val ]
 
-row : List (String, String) -> Wage -> Html a
+row : List ( String, String ) -> Wage -> Html a
 row employees wage =
   let
     personName = find (first >> ((==) wage.personId)) employees
@@ -41,7 +41,7 @@ row employees wage =
       ]
 
 
-wagesTable : List (String, String) -> List Wage -> Html a
+wagesTable : List ( String, String ) -> List Wage -> Html a
 wagesTable employees wages =
   div []
     [ table [ class "wages-table" ]
