@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline",
-    "build": "rimraf dist && webpack",
+    "build": "webpack",
     "test": "elm-test"
   },
   "devDependencies": {

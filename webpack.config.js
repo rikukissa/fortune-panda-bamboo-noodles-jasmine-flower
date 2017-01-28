@@ -16,7 +16,7 @@ const outputFilename = TARGET_ENV === 'production' ? '[name]-[hash].js' : '[name
 const commonConfig = {
   output: {
     path: outputPath,
-    filename: `/static/js/${outputFilename}`
+    filename: `static/js/${outputFilename}`
   },
   resolve: {
     extensions: ['', '.js', '.elm']
