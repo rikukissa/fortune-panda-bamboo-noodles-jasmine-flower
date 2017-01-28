@@ -1,4 +1,5 @@
-module Main exposing (..)
+module Main exposing (main)
+
 import Html exposing (..)
 import Html.Events exposing (on)
 import Html.Attributes exposing (..)
@@ -6,7 +7,8 @@ import Json.Decode as JD
 import List.Extra exposing (unique)
 
 import Ports exposing (CSVData, fileSelected, fileContentRead)
-import Utils.Wage exposing (HourMarking, Wage, fromCSVRow, calculateWages)
+import Utils.Wage exposing (Wage, calculateWages)
+import Utils.HourMarking exposing (HourMarking, fromCSVRow)
 import Components.WagesTable exposing (wagesTable)
 
 type alias HourSheet = List HourMarking

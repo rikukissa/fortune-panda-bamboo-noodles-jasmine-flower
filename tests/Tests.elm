@@ -6,7 +6,8 @@ import Maybe exposing (..)
 import Expect
 
 import Time.DateTime as DateTime exposing (DateTime, dateTime, zero)
-import Utils.Wage exposing (Wage, HourMarking, fromCSVRow, calculateWages)
+import Utils.Wage exposing (Wage, calculateWages)
+import Utils.HourMarking exposing (HourMarking, fromCSVRow)
 
 getWageForSingleMarking : DateTime -> DateTime -> Wage
 getWageForSingleMarking start end =
