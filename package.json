@@ -1,0 +1,45 @@
+{
+  "name": "wage-calculator",
+  "description": "Client for turning CSVs into wage calculations",
+  "version": "0.8.4",
+  "license": "MIT",
+  "author": "Riku Rouvila",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rikukissa/fortune-panda-bamboo-noodles-jasmine-flower"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --hot --inline",
+    "build": "rimraf dist && webpack",
+    "test": "elm-test"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.6",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "css-loader": "^0.26.1",
+    "elm": "^0.18.0",
+    "elm-hot-loader": "^0.5.4",
+    "elm-test": "^0.18.2",
+    "elm-webpack-loader": "^4.1.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.17.0",
+    "node-sass": "^4.2.0",
+    "postcss-loader": "^1.1.1",
+    "rimraf": "^2.5.2",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-merge": "^2.4.0"
+  },
+  "dependencies": {
+    "event-stream": "^3.3.4",
+    "filereader-stream": "^1.0.0",
+    "through2": "^2.0.3"
+  }
+}

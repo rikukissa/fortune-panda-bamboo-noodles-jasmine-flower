@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600');
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  background: #f4f8f9;
+  padding: 0.5em;
+  color: #4e4e4e;
+}
+
+h2 {
+  font-weight: 300;
+}
+
+.wages-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 1em;
+}
+
+.wages-table__header th {
+  text-align: left;
+  font-weight: normal;
+  color: #89a2ae;
+  padding: 0.75em 1em;
+}
+
+.wages-table__row td {
+  padding: 0;
+  padding-bottom: 0.5em;
+}
+
+.wages-table__value {
+  padding: 0.75em 1em;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.wages-table__value img {
+  vertical-align: middle;
+  margin-right: 0.5em;
+  border-radius: 100%;
+}
