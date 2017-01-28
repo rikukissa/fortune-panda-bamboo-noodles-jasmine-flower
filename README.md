@@ -1,4 +1,5 @@
 # Wage calculator
+[![Build Status](https://travis-ci.org/rikukissa/fortune-panda-bamboo-noodles-jasmine-flower.svg?branch=master)](https://travis-ci.org/rikukissa/fortune-panda-bamboo-noodles-jasmine-flower)
 
 Client for turning CSVs in `Person Name, Person ID, Date, Start, End` format to wage calculations.
 
